@@ -1,0 +1,231 @@
+﻿<!DOCTYPE html>
+<html lang='ja'>
+<head>
+<meta charset='utf-8'>
+<script>
+	// Client window size
+	var hClientWidth  = 0;
+	var hClientHeight = 0;
+	var hRemainWidth  = 0;
+	var hRemainHeight = 0;
+	
+	// Icon size
+	var hIconWidth  = 32;
+	var hIconHeight = 32;
+	
+	// Number of icon
+	var hNumOfIcon = 0;
+	
+	// Coordinates
+	x = new Array ();
+	y = new Array ();
+	
+	// SetInterval
+	function mStart()
+	{
+		// Date
+		var hCheckD = new Date();
+		// Month
+		var hCheckMonth = hCheckD.getMonth() + 1;
+		// Day
+		var hCheckDay = hCheckD.getDate();
+		
+		if(
+			// Agree
+			hCheckMonth == 1 &&
+			hCheckDay   == 1
+		)
+		{
+			// Client window size
+			// Firefox, Safari, Chrome
+			hClientWidth  = window.innerWidth + window.scrollX;
+			hClientHeight = window.innerHeight + window.scrollY;
+			
+			// When hX is NaN, return true.
+			var hIsNanW = mReallyNaN(
+				hClientWidth
+			);
+			var hIsNanH = mReallyNaN(
+				hClientHeight
+			);
+			
+			if(
+				hIsNanW == true ||
+				hIsNanH == true
+			)
+			{
+				// Client window size
+				// IE
+				hClientWidth  = window.innerWidth + document.documentElement.scrollLeft;
+				hClientHeight = window.innerHeight + document.documentElement.scrollTop;
+			}
+			
+			// Substitute
+			hRemainWidth  = hClientWidth;
+			hRemainHeight = hClientHeight;
+			
+			// Number of icon
+			hNumOfIcon = Math.floor(
+				hClientWidth / 10
+			);
+			
+			if(
+				hNumOfIcon > 0
+			)
+			{
+				for( var i = 0 ; i < hNumOfIcon ; i++ )
+				{
+					// Random 0 - 10
+					var hRandX = Math.floor(
+						Math.random() * 11
+					);
+					var hRandY = Math.floor(
+						Math.random() * 11
+					);
+					
+					// Coordinates
+					x[i] = Math.floor( hNumOfIcon - ( hIconWidth / 5 ) ) * hRandX;
+					y[i] = Math.floor( hClientHeight / 10 - ( hIconHeight / 5 ) ) * hRandY;
+					
+					// Img name
+					var hImgName = 'IMG_' + i;
+					
+					// Change coordinates
+					document.images[hImgName].style.left = x[i] + 'px';
+					document.images[hImgName].style.top = y[i] + 'px';
+				}
+				
+				setInterval(
+					'mDraw()',
+					50
+				);
+			}
+		}
+	}
+	
+	// Draw
+	function mDraw()
+	{
+		// Client window size
+		// Firefox, Safari, Chrome
+		hClientWidth  = window.innerWidth + window.scrollX;
+		hClientHeight = window.innerHeight + window.scrollY;
+		
+		// When hX is NaN, return true.
+		var hIsNanW = mReallyNaN(
+			hClientWidth
+		);
+		var hIsNanH = mReallyNaN(
+			hClientHeight
+		);
+		
+		if(
+			hIsNanW == true ||
+			hIsNanH == true
+		)
+		{
+			// Client window size
+			// IE
+			hClientWidth  = window.innerWidth + document.documentElement.scrollLeft;
+			hClientHeight = window.innerHeight + document.documentElement.scrollTop;
+		}
+		
+		if(
+			// When browser size is changed
+			hClientWidth != hRemainWidth
+		)
+		{
+			// Restart
+			mStart();
+		}
+		else
+		{
+			if(
+				hNumOfIcon > 0
+			)
+			{
+				for( var i = 0 ; i < hNumOfIcon ; i++ )
+				{
+					// X coordinates
+					// Random 0 - 10
+					var hRand = Math.floor(
+						Math.random() * 11
+					);
+					
+					if(
+						// Even or odd
+						hRand % 2 == 0
+					)
+					{
+						hRand = Math.floor(
+							Math.random() * 11
+						);
+						
+						if(
+							// Even or odd
+							hRand % 2 == 0
+						)
+						{
+							// An even number
+							x[i] += 0.5;
+							
+							if(
+								x[i] > hClientWidth - hIconHeight
+							)
+							{
+								x[i] = hClientWidth - hIconHeight;
+							}
+						}
+						else
+						{
+							// An odd number
+							x[i] -= 0.5;
+							
+							if(
+								x[i] < 0
+							)
+							{
+								x[i] = 0;
+							}
+						}
+					}
+					
+					// Y coordinates
+					if(
+						// When icon reach the bottom
+						y[i] > hClientHeight - ( hIconHeight * 2 )
+					)
+					{
+						y[i] = 0;
+					}
+					
+					y[i] += 0.5;
+					
+					// Img name
+					var hImgName = 'IMG_' + i;
+					
+					// Change coordinates
+					document.images[hImgName].style.left = x[i] + 'px';
+					document.images[hImgName].style.top = y[i] + 'px';
+				}
+			}
+		}
+	}
+	
+	// When hX is NaN, return true.
+	function mReallyNaN( hX )
+	{
+		// When NaN === NaN, return false
+		// When hX is NaN, return true.
+		// When hX is not NaN, return false.
+		return hX !== hX;
+	}
+</script>
+</head>
+<body onload='mStart()'>
+	<script src='./snow.js'>
+	</script>
+	
+	<img src='./background.jpg' /><br>
+</body>
+</html>
